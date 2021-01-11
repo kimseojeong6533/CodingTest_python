@@ -1,7 +1,9 @@
 from sys import stdin
-import copy
+import copy   # copy.deepcopy 지양하자 써야만 하는 경우에는 그냥 =처리
 
 R, C, M = list(map(int,stdin.readline().split()))
+
+# 상어 정보
 lst=[]
 for _ in range(M):
     lst.append(list(map(int,stdin.readline().split())))  # 위치(x,y), 속력, 이동방향, 크기
@@ -17,90 +19,86 @@ for i in lst:
 
 person=0
 fishing=0
-# print('초기지도 : ',zido)
-# print()
 
 
-while(person<C):
-    print('사람위치 : ',person,'fishing : ',fishing)
-
-    # 낚시꾼이 위치한 열에서 가장 가까운 상어를 잡는다
+while (person<C):
     sub=[]
     for i in lst:
         x,y,s,d,size=i
         if y == person:
             sub.append([x,y,s,d,size])
-
     sub.sort(key=lambda x:x[0])
-    #print(sub)
-    if sub !=[]:
-        fished_shark = sub.pop(0)  # 가장 가까운 상어를 잡았다
-        zido[fished_shark[0]][fished_shark[1]]=0  # 잡은 위치에 0을 넣음
-        fishing += fished_shark[4]
 
-    # 잡은 상어를 제외한 배열을 만들어야함
-    lst_copy=[i for i in lst if i != fished_shark]
-    print('lst_copy : ',lst_copy)
-    # 상어의 이동
-    lst=[]
-    for i in lst_copy:
-        x,y,s,d,size= i   # d : 1 -위, 2 - 아래, 3- 오른, 4- 왼쪽
-        new_x, new_y, new_d, new_s = x, y, d, s
-        zido[x][y]=0
+    if len(sub)>0:
+        fished_shark=sub.pop(0)
+        #print('fished_shark : ',fished_shark)
+        zido[fished_shark[0]][fished_shark[1]]=0
+        fishing+=fished_shark[4]
+        lst=[i for i in lst if i != fished_shark]
+
+
+    # 상어를 움직임
+    next_sharks = []
+    for i in lst:
+        x, y, s, d, size = i                     # 현재 상어위치 및 속도, 방향
+        new_x, new_y, new_d, new_s = x, y, d, s  # 다음 상어위치 및 속도, 방향,
+        zido[x][y] = 0
 
         moving=0
-        # 1씩 까면서, 방향전환
-        while moving<s:
-            if size==9:
-                print('x,y,new_x,new_y : ', x, new_x, y, new_y)
-                print()
+        while(moving<s):
+
             if new_d == 1:  # 위
-                new_x=new_x-1
+                new_x = new_x - 1
                 if new_x < 0:
                     new_x = abs(new_x)
-                    new_d=2
+                    new_d = 2
 
             elif new_d == 2:  # 아래
-                new_x=new_x+1
-                if new_x>=R:
-                    new_x-=1
-                    new_d=1
+                new_x = new_x + 1
+                if new_x >= R:
+                    new_x -= 2
+                    new_d = 1
 
             elif new_d == 3:  # 오른
-                new_y=new_y+1
-                if new_y>=C:
-                    new_y-=1
-                    new_d=4
+                new_y = new_y + 1
+                if new_y >= C:
+                    new_y -= 2
+                    new_d = 4
 
-            elif new_d==4:
-                new_y=new_y-1
-                if new_y<0:
-                    new_y=abs(new_y)
-                    new_d=3
+            elif new_d == 4:
+                new_y = new_y - 1
+                if new_y < 0:
+                    new_y = abs(new_y)
+                    new_d = 3
 
             moving+=1
 
+        next_sharks.append([new_x,new_y,s,new_d,size])
 
-        if zido[new_x][new_y] == 0: # 새로운 위치에 상어가 없다면,
-            zido[x][y] = 0          # 기존 위치에는 0을 넣고
-            zido[new_x][new_y] = [s, new_d, size]  # 새로운 위치에 속도, 방향, 크기를 넣어준다
+    for i in next_sharks:
+        x,y,s,d,size=i
 
-        elif zido[new_x][new_y]!=0: # 같은 위치에서는 가장 큰 상어만 살아남는다
-            #print('같은위치 상어들',new_x,new_y)
-            tmp=[zido[new_x][new_y]]
-            tmp.append([s,new_d,size])  # 속도 방향 사이즈
-            #print('tmp: ',tmp)
-            tmp.sort(key=lambda x:(-x[2]))
-            #print(tmp)
-            # winner=tmp[0]
-            zido[new_x][new_y]=[tmp[0]]  # 가장 큰상어만 남음.
-            #zido[x][y] = 0
+        if zido[x][y]==0:
+            zido[x][y]=[[s,d,size]]
 
-        lst.append([new_x, new_y, s, new_d, size])
-        # print()
-        # print('zido : ', zido)
-        # print()
+        else:
+            zido[x][y].append([s,d,size])
 
-    print('초기지도 : ', zido)
+
+    for i in range(R):
+        for j in range(C):
+            if (zido[i][j])!=0 and len(zido[i][j])>1:
+                survived=sorted(zido[i][j],key=lambda x:x[2])[-1]
+                zido[i][j]=[survived]
+
+    lst = []
+    for i in range(R):
+        for j in range(C):
+            if zido[i][j]!=0:
+                v=[i,j]+zido[i][j][0]
+                lst.append(v)
+
 
     person+=1
+
+print(fishing)
