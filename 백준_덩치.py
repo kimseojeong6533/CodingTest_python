@@ -1,25 +1,16 @@
 from sys import stdin
-
 N = int(stdin.readline())
 lst=[]
+d=[]
 for _ in range(N):
-    lst.append(tuple(map(int,stdin.readline().split())))
+    tmp = tuple(map(int,stdin.readline().split()))
+    lst.append(tmp)
 
-print(lst)
 
-wet = [x[0] for x in lst]
-het = [x[1] for x in lst]
-wet.sort(reverse=True)
-het.sort(reverse=True)
-print(wet)
-print(het)
-ans = []
-sub=0
-for i, j in zip(range(len(wet)),range(len(het))):
-    if (wet[i],het[j]) in lst:
-        ans.append(i)
-        sub=i
-    else:
-        ans.append(sub+1)
-print(ans)
+for tmp in lst:
+    more = [i for i in lst if tmp[0]<i[0] and tmp[1]<i[1]]  # 자기자신의 키와 몸무게 보다 큰 것들만 있는 리스트를 만든다
+    d.append(len(more)+1) # 해당 리스트의 길이+1 이 자기자신의 등수가 된다
+
+for i in d:
+    print(i, end=' ')
 
