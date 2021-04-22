@@ -31,9 +31,6 @@ v=-1
 q=[X]
 while(q):
     node = q.pop(0)
-    
-
-
 
     min_val = sys.maxsize
     for j in range(1,len(course[node-1])+1):
