@@ -24,3 +24,24 @@ for _ in range(T):
 
 for i in answer:
     print(i)
+
+
+# def check(a,b):  # 최대한 많은 칸을 방문시켜야
+#     move = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+#     cnt = 0
+#     que = [(a,b,forest[a][b],0)]
+#     visit = [[0]*n for _ in range(n)]
+#     eating = forest[a][b]
+#
+#
+#     forest2 = [x for x in forest]
+#     while(que):
+#         x,y,bamboo = que.pop(0)
+#         for d in move:
+#             nx = x+d[0]
+#             ny = y+d[1]
+#
+#             if nx>=0 and nx<n and ny>=0 and ny<n and visit[nx][ny]==0 and forest[nx][ny]>bamboo:
+#                 visit[nx][ny]=1
+#                 eating+=forest[nx][ny]
+#                 bamboo = forest[nx][ny]
