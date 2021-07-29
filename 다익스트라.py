@@ -54,7 +54,6 @@ go = {x:0 for x in range(1,N+1)}
 
 for i in range(1,N+1):
     red = dijkstra(i)
-    #print(i, ' : ', red)
     if i == X:
         come += list(red.values())
     else:
